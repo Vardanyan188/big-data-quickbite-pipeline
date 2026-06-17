@@ -1,0 +1,8 @@
+table_name,expected_columns,actual_columns,missing_columns,unexpected_columns,contract_status
+app_events,9,9,,,PASS
+orders,15,15,,,PASS
+payments,7,7,,,PASS
+restaurants,8,8,,,PASS
+couriers,7,7,,,PASS
+marketing_campaigns,7,7,,,PASS
+promo_codes,7,7,,,PASS

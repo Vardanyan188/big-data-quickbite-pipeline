@@ -1,0 +1,17 @@
+check_category,check_name,table_name,failed_rows,total_rows,failed_pct,severity,status,business_impact
+referential_integrity,orders.restaurant_id in restaurants,orders,0,15000,0.0,CRITICAL,PASS,Orders without a valid restaurant break revenue & restaurant metrics.
+referential_integrity,orders.courier_id in couriers (non-null),orders,0,15000,0.0,CRITICAL,PASS,Invalid courier breaks courier metrics.
+referential_integrity,orders.promo_code in promo_codes (non-null),orders,0,15000,0.0,HIGH,PASS,Unknown promo cannot attribute to a campaign.
+referential_integrity,payments.order_id in orders,payments,0,14827,0.0,CRITICAL,PASS,Orphan payments mis-state collected cash.
+referential_integrity,promo_codes.campaign_id in campaigns,promo_codes,10,210,4.7619,HIGH,FAIL,Orphan promos understate campaign ROI.
+temporal_sanity,accepted_ts <= picked_up_ts,orders,33,15000,0.22,MEDIUM,WARN,Negative prep time corrupts prep accuracy.
+temporal_sanity,picked_up_ts <= delivered_ts,orders,65,15000,0.4333,MEDIUM,WARN,Negative delivery time corrupts courier speed.
+temporal_sanity,delivered_ts only on delivered status,orders,20,15000,0.1333,MEDIUM,WARN,Phantom deliveries over-count completions.
+temporal_sanity,campaign end_ts >= start_ts,marketing_campaigns,0,50,0.0,MEDIUM,PASS,Inverted window breaks attribution.
+enum_validity,orders.status in canonical set,orders,0,15000,0.0,HIGH,PASS,Unknown status drops orders from status metrics.
+enum_validity,"payments.method in {card,wallet,cash}",payments,0,14827,0.0,MEDIUM,PASS,Bad method skews failure-by-method.
+enum_validity,"couriers.vehicle in {bike,car,scooter}",couriers,0,300,0.0,LOW,PASS,Bad vehicle skews fleet mix.
+enum_validity,"campaign.channel in {push,email,code}",marketing_campaigns,0,50,0.0,LOW,PASS,Bad channel skews channel ROI.
+cross_table_reconciliation,success payment total == order total,payments,130,15000,0.8667,MEDIUM,WARN,GMV vs collected cash gap.
+cross_table_reconciliation,promo current_uses <= max_uses,promo_codes,5,210,2.381,MEDIUM,WARN,Over-redemption = unbudgeted discount.
+cross_table_reconciliation,order.city == restaurant.city,orders,14,15000,0.0933,LOW,WARN,Geo mismatch (ambiguous; not auto-fixed).

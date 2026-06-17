@@ -1,0 +1,19 @@
+team,metric_name,definition,formula,source_table,grain,business_use,limitations
+Product,funnel_conversion_app_open_to_order,share of app_open events' funnel that reaches order_placed,order_placed / app_open (event counts),app_events,global,overall activation health,"event-grain, not user-stitched"
+Product,checkout_to_order_conversion,share of checkouts that become placed orders,order_placed / checkout,app_events,global,detects checkout friction,no user/session join needed
+Product,repeat_order_rate,customers with >1 delivered order / customers with >=1,repeat_customers / active_customers,fact_orders_clean,customer,loyalty / retention,window limited to dataset dates
+Restaurants,acceptance_rate,accepted (or further) orders / all orders,accepted_orders / orders_count,agg_restaurant_daily,restaurant/day,supply reliability,status normalization required
+Restaurants,prep_time_accuracy_minutes,avg actual prep minus self-reported avg_prep_minutes,avg(actual_prep) - avg(self_reported),fact_orders_clean,restaurant,SLA truthfulness,needs accepted+picked_up ts
+Restaurants,revenue_per_restaurant,delivered-order revenue per restaurant,sum(total where delivered),fact_orders_clean,restaurant,merchant value ranking,delivered only
+Couriers,on_time_delivery_pct,share of deliveries inside the 45-min order clock,on_time / deliveries,agg_courier_daily,courier/day,customer-facing SLA,full clock incl. prep; 45-min assumed
+Couriers,deliveries_per_shift_hour,deliveries normalized by shift length,deliveries / shift_hours,agg_courier_daily,courier,utilization,shift wrap handled; NULL on 0-hr shift
+Couriers,avg_delivery_minutes,"courier transit time only (pickup -> delivery), prep excluded",avg(delivered_ts - picked_up_ts),agg_courier_daily,courier/day,fair courier speed,temporal-issue rows excluded
+Marketing,promo_redemption_rate,observed redemptions / promo max_uses,observed_redemptions / promo_max_uses_total,agg_marketing_campaign,campaign,promo uptake,max_uses snapshot
+Marketing,cost_per_redeemed_order,budget per redeemed order,budget / observed_redemptions,agg_marketing_campaign,campaign,spend efficiency,impressions unknown
+Marketing,incremental_revenue_proxy,delivered campaign revenue minus discount given,campaign_revenue - discount_given,agg_marketing_campaign,campaign,ROI proxy,PROXY: no true counterfactual/impressions
+Payments,payment_failure_rate_by_method,failed / total payments per method,failed / total,payments_silver,method,gateway health,attempt-grain
+Payments,refund_pct_of_gmv,refund $ as % of delivered GMV,sum(refunds) / sum(delivered total),fact_orders_clean,global,leakage / fraud,refund timing within window
+Payments,payment_mismatch_rate,orders where paid success != order total,has_payment_mismatch / paid orders,fact_orders_clean,global,reconciliation,tolerance 0.01
+Support,refund_order_rate_PROXY,orders with a refund / all orders (PROXY for tickets),refunded_orders / orders,fact_orders_clean,global,PROXY: no support_tickets source,NOT a real ticket rate
+Support,problem_order_rate_PROXY,cancelled+rejected / all orders (PROXY),(cancelled+rejected)/orders,fact_orders_clean,global,PROXY operational pain,NOT a real complaint rate
+Support,payment_issue_rate_PROXY,orders with any failed payment / all (PROXY),orders_with_failed_payment / orders,fact_orders_clean,global,PROXY payment friction,NOT a real ticket rate
