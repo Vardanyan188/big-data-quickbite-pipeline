@@ -278,7 +278,6 @@ big-data-quickbite-pipeline/
 │   ├── restaurants.csv     couriers.csv    marketing_campaigns.csv
 │   └── promo_codes.csv
 ├── outputs/                                          # generated gold tables, reports, dashboard.png
-├── final-task.md                                     # the exam brief
 └── README.md
 ```
 
